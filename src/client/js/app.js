@@ -10,6 +10,7 @@
 
 import { trim } from "./helper";
 import { setMinDate } from "./helper";
+import { epochToDateString } from "./helper";
 
 /* ~~~~~ FETCHING ALL HTML ELEMENTS ~~~~~ */
 const form = document.getElementById("search-form");
@@ -62,41 +63,51 @@ async function handleSubmit(e) {
   let today = new Date();
   let difference = (departOn - today) / (1000 * 3600 * 24);
 
-  if (difference > 7) {
-    console.log("Future date - use Time Machine Request");
-  } else {
+  if (difference < 7) {
     console.log("Week date - use Forecast Request");
+    getPresentWeather(locationData);
+  } else {
+    console.log("Future date - use Time Machine Request");
+    getFutureWeather(locationData, departOn);
   }
 }
 
-function handleError(errorCode) {
-  let error = "";
+async function getPresentWeather(data) {
+  console.log("In getPresentWeather(data)");
 
-  switch (errorCode) {
-    case 0:
-      error = "Date invalid. Please enter a date in the future.";
-      break;
-    case 1:
-      error =
-        "Location invalid/not found. Please try with a different location. ";
-      break;
-    default:
-      error = "Unknown Error";
-      break;
-  }
+  // https://api.darksky.net/forecast/[key]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
+  const key = "138476a80ce39e46213c3fe7c71ce908";
 
-  if (errorCode === 0) {
-    error =
-      "Location invalid/not found. Please try with a different location. ";
-  }
+  const startString = "https://api.darksky.net/forecast/";
+  const endString = "?&exclude=minutely,hourly,flags&units=si";
 
-  errorMessage.innerHTML = error;
-  errorSection.style.display = "block";
+  const queryString =
+    startString + key + "/" + data.lat + "," + data.long + endString;
 
-  setTimeout(() => {
-    errorSection.style.display = "none";
-    console.log("hidden");
-  }, 5000);
+  const fetch = require("node-fetch");
+
+  const weatherData = await fetch(queryString);
+  const weatherJSON = await weatherData.json();
+  console.log(weatherJSON);
+
+  // let jsonData = await fetch(queryString, {
+  //   method: "GET",
+  //   mode: "cors",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //     "Access-Control-Allow-Origin": "*"
+  //   }
+  // })
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     console.log(data);
+  //   });
+
+  console.log(jsonData);
+}
+
+async function getFutureWeather(data, date) {
+  console.log("In getFutureWeather(data, date)");
 }
 
 async function getCoordinates(destination) {
@@ -136,6 +147,36 @@ async function getCoordinates(destination) {
   result.locationData = await locationJSON;
 
   return result;
+}
+
+function handleError(errorCode) {
+  let error = "";
+
+  switch (errorCode) {
+    case 0:
+      error = "Date invalid. Please enter a date in the future.";
+      break;
+    case 1:
+      error =
+        "Location invalid/not found. Please try with a different location. ";
+      break;
+    default:
+      error = "Unknown Error";
+      break;
+  }
+
+  if (errorCode === 0) {
+    error =
+      "Location invalid/not found. Please try with a different location. ";
+  }
+
+  errorMessage.innerHTML = error;
+  errorSection.style.display = "block";
+
+  setTimeout(() => {
+    errorSection.style.display = "none";
+    console.log("hidden");
+  }, 5000);
 }
 
 function handleUserURLInput(event) {

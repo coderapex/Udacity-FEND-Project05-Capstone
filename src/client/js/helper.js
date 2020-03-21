@@ -52,3 +52,34 @@ const setMinDate = (labelElement, dateElement) => {
 };
 
 export { setMinDate };
+
+// epochToDateString(1585033200)
+const epochToDateString = epochDate => {
+  let fullDate = new Date(epochDate * 1000);
+
+  let monthList = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+  ];
+
+  let date = fullDate.getDate(fullDate);
+  let month = fullDate.getMonth(fullDate);
+  let monthString = monthList[month];
+  let year = fullDate.getFullYear(fullDate);
+
+  let dateString = `${date} ${monthString} ${year}`;
+
+  return dateString;
+};
+
+export { epochToDateString };
