@@ -5,5 +5,5 @@ import "./styles/form.scss";
 import "./styles/footer.scss";
 // import "./styles/main.scss";
 
-export * from "./js/submitURL";
+export * from "./js/app";
 export * from "./js/helper";

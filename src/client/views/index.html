@@ -10,7 +10,34 @@
       <h1>Travel App - FEND Capstone Project</h1>
     </header>
 
-    <main></main>
+    <main>
+      <section id="search-section">
+        <form id="search-form">
+          <fieldset>
+            <label for="trip-location-field">
+              Where are you travelling to?
+            </label>
+            <input
+              type="text"
+              name="trip-location-field"
+              id="trip-location-field"
+              placeholder="Enter location name..."
+            />
+          </fieldset>
+
+          <fieldset>
+            <label id="trip-date-label" for="trip-date-field"
+              >Date of Departure</label
+            >
+            <input type="date" id="trip-date-field" />
+          </fieldset>
+          <div id="trip-buttons">
+            <button id="trip-save-button" type="submit">Save trip</button>
+            <button id="trip-reset-button" type="reset">Reset</button>
+          </div>
+        </form>
+      </section>
+    </main>
 
     <footer>
       <p>A Udacity Front End Nanodegree Project.</p>
