@@ -11,33 +11,26 @@
 import { trim } from "./helper";
 import { setMinDate } from "./helper";
 
-// fetching all elements
+/* ~~~~~ FETCHING ALL HTML ELEMENTS ~~~~~ */
 const form = document.getElementById("search-form");
-// console.log(`🚀: form`, form);
-
 const tripLocation = document.getElementById("trip-location-field");
-// console.log(`🚀: tripLocation`, tripLocation);
-
 const departDateLabel = document.getElementById("trip-date-label");
-
 const departDate = document.getElementById("trip-date-field");
-// console.log(`🚀: departDate`, departDate);
-
 const saveButton = document.getElementById("trip-save-button");
-// console.log(`🚀: saveButton`, saveButton);
-
 const resetButton = document.getElementById("trip-reset-button");
-// console.log(`🚀: resetButton`, resetButton);
+const errorSection = document.getElementById("error-section");
+const errorMessage = document.getElementById("error-message");
 
 // set minimum date to todays date
 setMinDate(departDateLabel, departDate);
 
-// set up event handlers
+/* ~~~~~ ATTACH EVENT HANDLER TO ELEMENTS ~~~~~ */
 form.addEventListener("submit", handleSubmit);
 saveButton.addEventListener("click", handleSubmit);
 resetButton.addEventListener("click", handleReset);
 
-// event handler definitions
+/* ~~~~~ EVENT HANDLER FUNCTION DEFINITIONS ~~~~~ */
+// handler to handle form submission and click on save button
 async function handleSubmit(e) {
   e.preventDefault();
   console.log("Form submitted");
@@ -48,8 +41,32 @@ async function handleSubmit(e) {
 
   // getting coordinates of location
   let data = await getCoordinates(destination);
-  console.log("Geonames call made. Result is:");
-  console.log(data);
+  // console.log("Geonames call made. Result is:");
+  // console.log(data);
+
+  // error handling based on results returned
+  if (data.error) {
+    console.log("ERROR : Location not found. Please try again.");
+    handleError(0);
+    return;
+  }
+}
+
+function handleError(errorCode) {
+  let error = "";
+
+  if (errorCode === 0) {
+    error =
+      "Location invalid/not found. Please try with a different location. ";
+  }
+
+  errorMessage.innerHTML = error;
+  errorSection.style.display = "block";
+
+  setTimeout(() => {
+    errorSection.style.display = "none";
+    console.log("hidden");
+  }, 5000);
 }
 
 async function getCoordinates(destination) {
@@ -65,7 +82,7 @@ async function getCoordinates(destination) {
 
   const locationData = await fetch(queryString);
   let jsonData = await locationData.json();
-  console.log(jsonData);
+  // console.log(jsonData);
 
   // the result object will be returned and will contain the data about the location
   let result = {};

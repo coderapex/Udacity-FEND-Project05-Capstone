@@ -57,3 +57,17 @@ input {
     font-size: 250%;
   }
 }
+
+#error-section {
+  display: none;
+  padding: 20px;
+  margin: 20px;
+  background-color: #ffc7c7;
+  text-align: center;
+}
+
+#result-section {
+  background-color: rgb(255, 223, 187);
+  text-align: center;
+  padding: 20px;
+}
