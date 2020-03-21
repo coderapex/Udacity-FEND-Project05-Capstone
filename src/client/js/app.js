@@ -37,23 +37,53 @@ async function handleSubmit(e) {
 
   // fetch all values submitted
   let destination = tripLocation.value;
-  let departOn = departDate.value;
+  let departOn = new Date(departDate.value);
 
   // getting coordinates of location
-  let data = await getCoordinates(destination);
-  // console.log("Geonames call made. Result is:");
-  // console.log(data);
+  // let locationData = await getCoordinates(destination);
+
+  // dummy data for testing
+  let locationData = {
+    error: false,
+    city: "London",
+    country: "United Kingdom",
+    lat: 51.50853,
+    long: -0.12574
+  };
 
   // error handling based on results returned
-  if (data.error) {
+  if (locationData.error) {
     console.log("ERROR : Location not found. Please try again.");
-    handleError(0);
+    handleError(1);
     return;
+  }
+
+  // calculate the difference in no. of days from today
+  let today = new Date();
+  let difference = (departOn - today) / (1000 * 3600 * 24);
+
+  if (difference > 7) {
+    console.log("Future date - use Time Machine Request");
+  } else {
+    console.log("Week date - use Forecast Request");
   }
 }
 
 function handleError(errorCode) {
   let error = "";
+
+  switch (errorCode) {
+    case 0:
+      error = "Date invalid. Please enter a date in the future.";
+      break;
+    case 1:
+      error =
+        "Location invalid/not found. Please try with a different location. ";
+      break;
+    default:
+      error = "Unknown Error";
+      break;
+  }
 
   if (errorCode === 0) {
     error =
