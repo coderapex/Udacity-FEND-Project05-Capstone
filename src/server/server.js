@@ -45,12 +45,12 @@ const returnProjectData = (request, response) => {
 
 app.get("/all", returnProjectData);
 
-// GET route to fetch the weather data
+// GET route to fetch the present weather data
 app.post("/present-weather", async (request, response) => {
   const lat = request.body.lat;
   const long = request.body.long;
 
-  let queryString = darkSkyQuery(lat, long);
+  let queryString = darkSkyPresentQuery(lat, long);
 
   const weatherData = await fetch(queryString);
   // console.log("weatherData");
@@ -58,6 +58,27 @@ app.post("/present-weather", async (request, response) => {
   const weatherJSON = await weatherData.json();
   // console.log("weatherJSON");
   // console.log(weatherJSON);
+
+  response.send(weatherJSON);
+});
+
+// GET route to fetch the future weather data on specified date
+app.post("/future-weather", async (request, response) => {
+  const lat = request.body.lat;
+  const long = request.body.long;
+  const date = request.body.date;
+
+  let queryString = darkSkyFutureQuery(lat, long, date);
+
+  console.log("Future query string:");
+  console.log(queryString);
+
+  const weatherData = await fetch(queryString);
+  console.log("weatherData");
+  console.log(weatherData);
+  const weatherJSON = await weatherData.json();
+  console.log("weatherJSON");
+  console.log(weatherJSON);
 
   response.send(weatherJSON);
 });
@@ -77,14 +98,41 @@ app.post("/add", addProjectData);
 
 /* ~~~~~ HELPER FUNCTIONS ~~~~~ */
 
-function darkSkyQuery(lat, long) {
-  // https://api.darksky.net/forecast/[key]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
-  const key = "138476a80ce39e46213c3fe7c71ce908";
+function darkSkyPresentQuery(lat, long) {
+  // https://api.darksky.net/forecast/[darkskyKey]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
+  const darkskyKey = "138476a80ce39e46213c3fe7c71ce908";
 
   const startString = "https://api.darksky.net/forecast/";
   const endString = "?&exclude=minutely,hourly,flags&units=si";
 
-  const queryString = startString + key + "/" + lat + "," + long + endString;
+  const queryString =
+    startString + darkskyKey + "/" + lat + "," + long + endString;
+  // console.log(queryString);
+
+  return queryString;
+}
+
+function darkSkyFutureQuery(lat, long, date) {
+  //   https://api.darksky.net/forecast/[darkskyKey]/[latitude],[longitude],[time]&exclude=minutely,hourly,flags&units=si
+  const darkskyKey = "138476a80ce39e46213c3fe7c71ce908";
+
+  const startString = "https://api.darksky.net/forecast/";
+  const endString = "?&exclude=minutely,hourly,flags&units=si";
+
+  // converting variable date to datatype date before applying any date function on it
+  let timestamp = new Date(date);
+  timestamp = Math.floor(timestamp.getTime() / 1000.0);
+
+  const queryString =
+    startString +
+    darkskyKey +
+    "/" +
+    lat +
+    "," +
+    long +
+    "," +
+    timestamp +
+    endString;
   // console.log(queryString);
 
   return queryString;

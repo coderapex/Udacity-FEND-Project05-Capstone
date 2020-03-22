@@ -12,11 +12,15 @@ import { trim } from "./helper";
 import { setMinDate } from "./helper";
 import { epochToDateString } from "./helper";
 
+// variable to save all the data
+let tripData = {};
+
 /* ~~~~~ FETCHING ALL HTML ELEMENTS ~~~~~ */
 const form = document.getElementById("search-form");
 const tripLocation = document.getElementById("trip-location-field");
 const departDateLabel = document.getElementById("trip-date-label");
 const departDate = document.getElementById("trip-date-field");
+const returnDate = document.getElementById("trip-end-field");
 const saveButton = document.getElementById("trip-save-button");
 const resetButton = document.getElementById("trip-reset-button");
 const errorSection = document.getElementById("error-section");
@@ -39,6 +43,13 @@ async function handleSubmit(e) {
   // fetch all values submitted
   let destination = tripLocation.value;
   let departOn = new Date(departDate.value);
+  let returnOn = new Date(returnDate.value);
+
+  // error handling to make sure return date is after depart date
+  if (returnOn < departOn) {
+    handleError(2);
+    return;
+  }
 
   // getting coordinates of location
   // let locationData = await getCoordinates(destination);
@@ -63,7 +74,7 @@ async function handleSubmit(e) {
   let difference = (departOn - today) / (1000 * 3600 * 24);
 
   if (difference < 7) {
-    console.log("Week date - use Forecast Request");
+    console.log("Present date - use Forecast Request");
     getPresentWeather(locationData);
   } else {
     console.log("Future date - use Time Machine Request");
@@ -80,12 +91,22 @@ async function getPresentWeather(data) {
     headers: { "Content-Type": "application/json" }
   });
   const weatherJSON = await weatherData.json();
-  console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
-  console.log(weatherJSON);
+  // console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
+  // console.log(weatherJSON);
 }
 
 async function getFutureWeather(data, date) {
-  console.log("In getFutureWeather(data, date)");
+  console.log("In getFutureWeather()");
+  // const weatherData = await fetch(`/present-weather/${data.lat},${data.long}`);
+  let bodyData = { lat: data.lat, long: data.long, date: date };
+  let weatherData = await fetch(`/future-weather`, {
+    method: "post",
+    body: JSON.stringify(bodyData),
+    headers: { "Content-Type": "application/json" }
+  });
+  const weatherJSON = await weatherData.json();
+  // console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
+  // console.log(weatherJSON);
 }
 
 async function getCoordinates(destination) {
@@ -137,6 +158,9 @@ function handleError(errorCode) {
     case 1:
       error =
         "Location invalid/not found. Please try with a different location. ";
+      break;
+    case 2:
+      error = "Return Date selected is before Depart Date ";
       break;
     default:
       error = "Unknown Error";
