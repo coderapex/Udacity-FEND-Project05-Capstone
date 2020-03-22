@@ -45,6 +45,47 @@ const returnProjectData = (request, response) => {
 
 app.get("/all", returnProjectData);
 
+app.post("/fetch-coordinates", async (request, response) => {
+  try {
+    console.log(`- - In app.post("/fetch-coordinates")`);
+    const locationString = request.body.locationString;
+
+    const queryString = geonamesQuery(locationString);
+    // console.log(
+    //   `Back to app.post("/fetch-coordinates") from geonamesQuery(locationString)`
+    // );
+
+    const coordinateData = await fetch(queryString);
+    // console.log(`🚀: coordinateData`, coordinateData);
+
+    const coordinateJSON = await coordinateData.json();
+    console.log(`🚀: coordinateJSON`, coordinateJSON);
+
+    console.log(`- - Exiting app.post("/fetch-coordinates")`);
+
+    response.send(coordinateJSON);
+  } catch (error) {
+    console.log("Error Occurred:");
+    console.log(error);
+  }
+});
+
+function geonamesQuery(locationString) {
+  console.log(`In geonamesQuery(locationString)`);
+  // http://api.geonames.org/searchJSON?q=london&maxRows=1&username=coderapex
+  const startString = "http://api.geonames.org/searchJSON?q=";
+  const endString = "&maxRows=1&username=coderapex";
+
+  // removing empty spaces from the query string
+  locationString = locationString.replace(/\s/g, "%20");
+
+  // setting final query string to call
+  const queryString = startString + locationString + endString;
+
+  console.log(`🚀: geonamesQuery -> queryString`, queryString);
+  return queryString;
+}
+
 // GET route to fetch the present weather data
 app.post("/present-weather", async (request, response) => {
   const lat = request.body.lat;
@@ -87,27 +128,66 @@ app.post("/future-weather", async (request, response) => {
 });
 
 app.post("/get-image", async (request, response) => {
-  const city = request.body.city;
-  const country = request.body.country;
+  try {
+    console.log(`- - In app.post("/get-image")`);
 
-  let queryString = pixabayQuery(city, country);
-  // console.log(queryString);
+    const city = request.body.city;
+    const country = request.body.country;
 
-  const imageData = await fetch(queryString);
-  // console.log("imageData");
-  // console.log(imageData);
-  const imageJSON = await imageData.json();
-  // console.log("imageJSON");
-  // console.log(imageJSON);
+    let queries = pixabayQuery(city, country);
+    // console.log(`🚀: queries`, queries);
 
-  response.send(imageJSON);
+    // first search for image of city
+    let imageData = await fetch(queries.cityQueryString);
+    // console.log("imageData");
+    // console.log(imageData);
+    let imageJSON = await imageData.json();
+    // console.log("imageJSON");
+    // console.log(imageJSON);
+
+    // adding a flag saying no error in finding image
+    imageJSON = { ...imageJSON, error: false, errorMessage: null };
+
+    // in case no image is found, search for country image
+    if (imageJSON.total == 0) {
+      console.log(
+        "ERROR : No image found for city. Searching for country image now..."
+      );
+
+      imageData = await fetch(queries.countryQueryString);
+      // console.log("imageData");
+      // console.log(imageData);
+      imageJSON = await imageData.json();
+      // console.log("imageJSON");
+      // console.log(imageJSON);
+
+      // adding a flag saying no error in finding image
+      imageJSON = { ...imageJSON, error: false, errorMessage: null };
+
+      // if no image is found, setting error message
+      if (imageJSON.total == 0) {
+        console.log(
+          "ERROR : No image found for city. Searching for country image now..."
+        );
+        imageJSON = {
+          ...imageJSON,
+          error: true,
+          errorMessage: "No image found for city or country"
+        };
+      }
+    }
+    console.log(`- - Exiting app.post("/get-image")`);
+
+    response.send(imageJSON);
+  } catch (error) {
+    console.log(`Error in app.post("/get-image")`);
+    console.log(error);
+  }
 });
 
 function pixabayQuery(city, country) {
   city = city.replace(/\s+/g, "+").toLowerCase();
   country = country.replace(/\s+/g, "+").toLowerCase();
-
-  let query = `${city}+${country}`;
 
   const pixabayKey = "15691331-4cc15662277207ca9104dc184";
 
@@ -116,8 +196,12 @@ function pixabayQuery(city, country) {
   const startString = `https://pixabay.com/api/?key=${pixabayKey}&q=`;
   const endString = `&image_type=photo&orientation=vertical&per_page=3`;
 
-  const queryString = startString + query + endString;
-  return queryString;
+  const cityQueryString = startString + city + endString;
+  const countryQueryString = startString + country + endString;
+
+  let queryObject = { cityQueryString, countryQueryString };
+
+  return queryObject;
 }
 
 // POST route will add received data to ProjectData
