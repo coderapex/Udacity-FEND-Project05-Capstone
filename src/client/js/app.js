@@ -54,7 +54,6 @@ async function handleSubmit(e) {
 
   // error handling based on results returned
   if (locationData.error) {
-    console.log("ERROR : Location not found. Please try again.");
     handleError(1);
     return;
   }
@@ -73,37 +72,16 @@ async function handleSubmit(e) {
 }
 
 async function getPresentWeather(data) {
-  console.log("In getPresentWeather(data)");
-
-  // https://api.darksky.net/forecast/[key]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
-  const key = "138476a80ce39e46213c3fe7c71ce908";
-
-  const startString = "https://api.darksky.net/forecast/";
-  const endString = "?&exclude=minutely,hourly,flags&units=si";
-
-  const queryString =
-    startString + key + "/" + data.lat + "," + data.long + endString;
-
-  const fetch = require("node-fetch");
-
-  const weatherData = await fetch(queryString);
+  // const weatherData = await fetch(`/present-weather/${data.lat},${data.long}`);
+  let bodyData = { lat: data.lat, long: data.long };
+  let weatherData = await fetch(`/present-weather`, {
+    method: "post",
+    body: JSON.stringify(bodyData),
+    headers: { "Content-Type": "application/json" }
+  });
   const weatherJSON = await weatherData.json();
+  console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
   console.log(weatherJSON);
-
-  // let jsonData = await fetch(queryString, {
-  //   method: "GET",
-  //   mode: "cors",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     "Access-Control-Allow-Origin": "*"
-  //   }
-  // })
-  //   .then(res => res.json())
-  //   .then(data => {
-  //     console.log(data);
-  //   });
-
-  console.log(jsonData);
 }
 
 async function getFutureWeather(data, date) {

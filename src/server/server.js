@@ -11,6 +11,9 @@ const app = express();
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+// using fetch api in node
+const fetch = require("node-fetch");
+
 /* Middleware*/
 //Here we are configuring express to use body-parser as middle-ware.
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -42,6 +45,23 @@ const returnProjectData = (request, response) => {
 
 app.get("/all", returnProjectData);
 
+// GET route to fetch the weather data
+app.post("/present-weather", async (request, response) => {
+  const lat = request.body.lat;
+  const long = request.body.long;
+
+  let queryString = darkSkyQuery(lat, long);
+
+  const weatherData = await fetch(queryString);
+  // console.log("weatherData");
+  // console.log(weatherData);
+  const weatherJSON = await weatherData.json();
+  // console.log("weatherJSON");
+  // console.log(weatherJSON);
+
+  response.send(weatherJSON);
+});
+
 // POST route will add received data to ProjectData
 const addProjectData = (request, response) => {
   newEntry = {
@@ -54,3 +74,18 @@ const addProjectData = (request, response) => {
 };
 
 app.post("/add", addProjectData);
+
+/* ~~~~~ HELPER FUNCTIONS ~~~~~ */
+
+function darkSkyQuery(lat, long) {
+  // https://api.darksky.net/forecast/[key]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
+  const key = "138476a80ce39e46213c3fe7c71ce908";
+
+  const startString = "https://api.darksky.net/forecast/";
+  const endString = "?&exclude=minutely,hourly,flags&units=si";
+
+  const queryString = startString + key + "/" + lat + "," + long + endString;
+  // console.log(queryString);
+
+  return queryString;
+}
