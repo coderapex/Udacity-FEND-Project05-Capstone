@@ -52,6 +52,9 @@ app.post("/present-weather", async (request, response) => {
 
   let queryString = darkSkyPresentQuery(lat, long);
 
+  console.log("Present query string:");
+  console.log(queryString);
+
   const weatherData = await fetch(queryString);
   // console.log("weatherData");
   // console.log(weatherData);
@@ -82,6 +85,40 @@ app.post("/future-weather", async (request, response) => {
 
   response.send(weatherJSON);
 });
+
+app.post("/get-image", async (request, response) => {
+  const city = request.body.city;
+  const country = request.body.country;
+
+  let queryString = pixabayQuery(city, country);
+  // console.log(queryString);
+
+  const imageData = await fetch(queryString);
+  // console.log("imageData");
+  // console.log(imageData);
+  const imageJSON = await imageData.json();
+  // console.log("imageJSON");
+  // console.log(imageJSON);
+
+  response.send(imageJSON);
+});
+
+function pixabayQuery(city, country) {
+  city = city.replace(/\s+/g, "+").toLowerCase();
+  country = country.replace(/\s+/g, "+").toLowerCase();
+
+  let query = `${city}+${country}`;
+
+  const pixabayKey = "15691331-4cc15662277207ca9104dc184";
+
+  // https://pixabay.com/api/?key={key}&q={query}&image_type=photo&orientation=vertical&per_page=3
+
+  const startString = `https://pixabay.com/api/?key=${pixabayKey}&q=`;
+  const endString = `&image_type=photo&orientation=vertical&per_page=3`;
+
+  const queryString = startString + query + endString;
+  return queryString;
+}
 
 // POST route will add received data to ProjectData
 const addProjectData = (request, response) => {

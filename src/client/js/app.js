@@ -59,8 +59,8 @@ async function handleSubmit(e) {
   // dummy data for testing
   let locationData = {
     error: false,
-    city: "London",
-    country: "United Kingdom",
+    city: "Paris",
+    country: "France",
     lat: 51.50853,
     long: -0.12574
   };
@@ -98,89 +98,30 @@ async function handleSubmit(e) {
     // forecast = await getFutureWeather(locationData, departOn);
 
     // for development
-
     forecast = { ...forecastFuture };
   }
 
   tripData = { ...tripData, forecast: forecast.daily.data };
-  console.log("Current Trip Data is:");
-  console.log(tripData);
+
+  let url = await getLocationImage(tripData);
+
+  tripData = { ...tripData, imgURL: url };
 
   renderTripData(tripData);
 }
 
-function renderTripData(tripData) {
-  console.log("In renderTripData()");
+async function getLocationImage(tripData) {
+  let bodyData = { city: tripData.city, country: tripData.country };
+  let imageData = await fetch("/get-image", {
+    method: "post",
+    body: JSON.stringify(bodyData),
+    headers: { "Content-Type": "application/json" }
+  });
+  const imageJSON = await imageData.json();
+  console.log("~~~~~ imageJSON RECIEVED ~~~~~");
+  console.log(imageJSON);
 
-  // getting all HTML Elements
-  const locationImage = document.getElementById("location-image");
-  const tripDuration = document.getElementById("trip-duration");
-  const cityName = document.getElementById("city-name");
-  const countryName = document.getElementById("country-name");
-  const departDate = document.getElementById("depart");
-  const returnDate = document.getElementById("return");
-  const singleForecast = document.getElementById("single-forecast");
-  const minMax = document.getElementById("min-max");
-  const humidity = document.getElementById("humidity");
-  const wind = document.getElementById("wind");
-  const daysLeft = document.getElementById("days-left");
-  const multiForecast = document.getElementById("multi-forecast");
-
-  // updating core trip information in the UI
-  let tripLengthString = "";
-  if (tripData.duration == 0) tripLengthString = ` 1 day `;
-  else tripLengthString = ` ${tripData.duration + 1} days `;
-
-  tripDuration.innerHTML = tripLengthString;
-  cityName.innerHTML = tripData.city;
-  countryName.innerHTML = tripData.country;
-  departDate.innerHTML = tripData.departure;
-  returnDate.innerHTML = tripData.return;
-
-  daysLeft.innerHTML = ` ${Math.ceil(tripData.daysLeft)} `;
-
-  // updating the UI based on tripData forecast
-  if (tripData.forecast.length == 1) {
-    multiForecast.style.display = "none";
-    singleForecast.style.display = "grid";
-
-    const dayForecast = tripData.forecast[0];
-
-    const max = dayForecast.temperatureMax;
-    const min = dayForecast.temperatureMin;
-    minMax.innerHTML = `${min}/${max}`;
-
-    humidity.innerHTML = dayForecast.humidity;
-    wind.innerHTML = dayForecast.windSpeed + " kmph";
-  } else {
-    singleForecast.style.display = "none";
-    multiForecast.style.display = "grid";
-    multiForecast.innerHTML = "";
-
-    const weekForecast = tripData.forecast;
-
-    weekForecast.forEach(entry => {
-      let time = entry.time;
-      let dateFull = epochToDateString(time);
-      let date = dateFull.slice(0, dateFull.length - 4);
-
-      let min = entry.temperatureMin;
-      let max = entry.temperatureMax;
-
-      let html = `
-        <div class="day-forecast">
-          <div class="date">${date}</div>
-          <div>
-            <span class="day-min">${min}</span>
-            <span class="day-max">${max}</span>
-          </div>
-        </div>
-      `;
-
-      // h.insertAdjacentHTML("afterend", "<p>My new paragraph</p>");
-      multiForecast.insertAdjacentHTML("beforeend", html);
-    });
-  }
+  return imageJSON.hits[0].webformatURL;
 }
 
 async function getPresentWeather(data) {
@@ -192,8 +133,8 @@ async function getPresentWeather(data) {
     headers: { "Content-Type": "application/json" }
   });
   const weatherJSON = await weatherData.json();
-  // console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
-  // console.log(weatherJSON);
+  console.log("~~~~~ 7 day weatherJSON RECIEVED ~~~~~");
+  console.log(weatherJSON);
 
   return weatherJSON;
 }
@@ -208,8 +149,8 @@ async function getFutureWeather(data, date) {
     headers: { "Content-Type": "application/json" }
   });
   const weatherJSON = await weatherData.json();
-  // console.log("~~~~~ weatherJSON RECIEVED ~~~~~");
-  // console.log(weatherJSON);
+  console.log("~~~~~ 1 day weatherJSON RECIEVED ~~~~~");
+  console.log(weatherJSON);
 
   return weatherJSON;
 }
@@ -227,7 +168,8 @@ async function getCoordinates(destination) {
 
   const locationData = await fetch(queryString);
   let jsonData = await locationData.json();
-  // console.log(jsonData);
+  console.log("~~~~~ location jsonData RECIEVED ~~~~~");
+  console.log(jsonData);
 
   // the result object will be returned and will contain the data about the location
   let result = {};
@@ -284,6 +226,85 @@ function handleError(errorCode) {
     errorSection.style.display = "none";
     console.log("hidden");
   }, 5000);
+}
+
+function renderTripData(tripData) {
+  console.log("In renderTripData()");
+
+  // getting all HTML Elements
+  const resultSection = document.getElementById("result-section");
+  const tripDuration = document.getElementById("trip-duration");
+  const locationImage = document.getElementById("location-image");
+  const cityName = document.getElementById("city-name");
+  const countryName = document.getElementById("country-name");
+  const departDate = document.getElementById("depart");
+  const returnDate = document.getElementById("return");
+  const singleForecast = document.getElementById("single-forecast");
+  const minMax = document.getElementById("min-max");
+  const humidity = document.getElementById("humidity");
+  const wind = document.getElementById("wind");
+  const daysLeft = document.getElementById("days-left");
+  const multiForecast = document.getElementById("multi-forecast");
+
+  // make result section visible
+  resultSection.style.display = "block";
+
+  // updating core trip information in the UI
+  let tripLengthString = "";
+  if (tripData.duration == 0) tripLengthString = ` 1 day `;
+  else tripLengthString = ` ${tripData.duration + 1} days `;
+  tripDuration.innerHTML = tripLengthString;
+
+  locationImage.setAttribute("src", tripData.imgURL);
+
+  cityName.innerHTML = tripData.city;
+  countryName.innerHTML = tripData.country;
+  departDate.innerHTML = tripData.departure;
+  returnDate.innerHTML = tripData.return;
+  daysLeft.innerHTML = ` ${Math.ceil(tripData.daysLeft)} `;
+
+  // updating the UI based on tripData forecast
+  if (tripData.forecast.length == 1) {
+    multiForecast.style.display = "none";
+    singleForecast.style.display = "grid";
+
+    const dayForecast = tripData.forecast[0];
+
+    const max = dayForecast.temperatureMax;
+    const min = dayForecast.temperatureMin;
+    minMax.innerHTML = `${min}/${max}`;
+
+    humidity.innerHTML = dayForecast.humidity;
+    wind.innerHTML = dayForecast.windSpeed + " kmph";
+  } else {
+    singleForecast.style.display = "none";
+    multiForecast.style.display = "grid";
+    multiForecast.innerHTML = "";
+
+    const weekForecast = tripData.forecast;
+
+    weekForecast.forEach(entry => {
+      let time = entry.time;
+      let dateFull = epochToDateString(time);
+      let date = dateFull.slice(0, dateFull.length - 4);
+
+      let min = entry.temperatureMin;
+      let max = entry.temperatureMax;
+
+      let html = `
+        <div class="day-forecast">
+          <div class="date">${date}</div>
+          <div>
+            <span class="day-min">${min}</span>
+            <span class="day-max">${max}</span>
+          </div>
+        </div>
+      `;
+
+      // h.insertAdjacentHTML("afterend", "<p>My new paragraph</p>");
+      multiForecast.insertAdjacentHTML("beforeend", html);
+    });
+  }
 }
 
 function handleUserURLInput(event) {
