@@ -29,14 +29,14 @@
             <label id="trip-date-label" for="trip-date-field">
               Date of Departure
             </label>
-            <input type="date" id="trip-date-field" />
+            <input type="date" id="trip-date-field" required />
           </fieldset>
 
           <fieldset>
             <label id="trip-end-label" for="trip-end-field">
               Date of Return
             </label>
-            <input type="date" id="trip-end-field" />
+            <input type="date" id="trip-end-field" required />
           </fieldset>
 
           <div id="trip-buttons">
@@ -52,11 +52,12 @@
       </section>
 
       <section id="result-section">
-        <h3>Your Trip</h3>
+        <div>Your trip is <span id="trip-duration"> 5 days </span> long...</div>
         <div id="trip-details">
           <div id="location-details">
-            <div id="location-image">
+            <div>
               <img
+                id="location-image"
                 src="https://cdn.pixabay.com/photo/2013/10/15/09/12/flower-195893_1280.jpg"
                 alt="location image"
               />
@@ -64,15 +65,15 @@
 
             <div id="location-description">
               You are travelling to
-              <div id="city-name">London</div>
-              <div id="country-name">United Kingdom</div>
+              <div id="city-name">Ldn</div>
+              <div id="country-name">UK</div>
               <div>
                 <span class="small-font">Depart on:</span>
-                <span class="trip-date">22 Mar 2020</span>
+                <span class="trip-date" id="depart">22 Mar 2020</span>
               </div>
               <div>
                 <span class="small-font">Return on:</span>
-                <span class="trip-date">22 Mar 2020</span>
+                <span class="trip-date" id="return">22 Mar 2020</span>
               </div>
 
               <div id="single-forecast">
@@ -81,10 +82,6 @@
                   <span class="small-font">Min/Max</span>
                 </div>
                 <div id="single-details">
-                  <div>
-                    <span class="small-font">Precipitation:</span>
-                    <span id="precipitation">50%</span>
-                  </div>
                   <div>
                     <span class="small-font">Humidity:</span>
                     <span id="humidity">50%</span>
@@ -95,10 +92,19 @@
                   </div>
                 </div>
               </div>
+
+              <div>You depart in <span id="days-left"> 5 </span>days</div>
             </div>
           </div>
 
-          <div id="weekly-forecast">
+          <div id="multi-forecast">
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
             <div class="day-forecast">
               <div class="date">21 Mar</div>
               <div>

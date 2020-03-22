@@ -8,9 +8,7 @@
 // - Get the weather of the coordinates from Dark Sky API
 // - Get image of location from Pixabay API
 
-import { trim, dateToEpoch } from "./helper";
-import { setMinDate } from "./helper";
-import { epochToDateString } from "./helper";
+import { trim, dateToEpoch, setMinDate, epochToDateString } from "./helper";
 
 // variable to save all the data
 let tripData = {};
@@ -27,7 +25,7 @@ const errorSection = document.getElementById("error-section");
 const errorMessage = document.getElementById("error-message");
 
 // set minimum date to todays date
-setMinDate(departDateLabel, departDate);
+setMinDate(departDateLabel, departDate, returnDate);
 
 /* ~~~~~ ATTACH EVENT HANDLER TO ELEMENTS ~~~~~ */
 form.addEventListener("submit", handleSubmit);
@@ -82,6 +80,10 @@ async function handleSubmit(e) {
   // calculate the difference in no. of days from today
   let today = new Date();
   let difference = (departOn - today) / (1000 * 3600 * 24);
+  tripData = {
+    ...tripData,
+    daysLeft: difference
+  };
 
   // fetch weather based on departure date
   let forecast = {};
@@ -103,10 +105,82 @@ async function handleSubmit(e) {
   tripData = { ...tripData, forecast: forecast.daily.data };
   console.log("Current Trip Data is:");
   console.log(tripData);
+
+  renderTripData(tripData);
 }
 
 function renderTripData(tripData) {
   console.log("In renderTripData()");
+
+  // getting all HTML Elements
+  const locationImage = document.getElementById("location-image");
+  const tripDuration = document.getElementById("trip-duration");
+  const cityName = document.getElementById("city-name");
+  const countryName = document.getElementById("country-name");
+  const departDate = document.getElementById("depart");
+  const returnDate = document.getElementById("return");
+  const singleForecast = document.getElementById("single-forecast");
+  const minMax = document.getElementById("min-max");
+  const humidity = document.getElementById("humidity");
+  const wind = document.getElementById("wind");
+  const daysLeft = document.getElementById("days-left");
+  const multiForecast = document.getElementById("multi-forecast");
+
+  // updating core trip information in the UI
+  let tripLengthString = "";
+  if (tripData.duration == 0) tripLengthString = ` 1 day `;
+  else tripLengthString = ` ${tripData.duration + 1} days `;
+
+  tripDuration.innerHTML = tripLengthString;
+  cityName.innerHTML = tripData.city;
+  countryName.innerHTML = tripData.country;
+  departDate.innerHTML = tripData.departure;
+  returnDate.innerHTML = tripData.return;
+
+  daysLeft.innerHTML = ` ${Math.ceil(tripData.daysLeft)} `;
+
+  // updating the UI based on tripData forecast
+  if (tripData.forecast.length == 1) {
+    multiForecast.style.display = "none";
+    singleForecast.style.display = "grid";
+
+    const dayForecast = tripData.forecast[0];
+
+    const max = dayForecast.temperatureMax;
+    const min = dayForecast.temperatureMin;
+    minMax.innerHTML = `${min}/${max}`;
+
+    humidity.innerHTML = dayForecast.humidity;
+    wind.innerHTML = dayForecast.windSpeed + " kmph";
+  } else {
+    singleForecast.style.display = "none";
+    multiForecast.style.display = "grid";
+    multiForecast.innerHTML = "";
+
+    const weekForecast = tripData.forecast;
+
+    weekForecast.forEach(entry => {
+      let time = entry.time;
+      let dateFull = epochToDateString(time);
+      let date = dateFull.slice(0, dateFull.length - 4);
+
+      let min = entry.temperatureMin;
+      let max = entry.temperatureMax;
+
+      let html = `
+        <div class="day-forecast">
+          <div class="date">${date}</div>
+          <div>
+            <span class="day-min">${min}</span>
+            <span class="day-max">${max}</span>
+          </div>
+        </div>
+      `;
+
+      // h.insertAdjacentHTML("afterend", "<p>My new paragraph</p>");
+      multiForecast.insertAdjacentHTML("beforeend", html);
+    });
+  }
 }
 
 async function getPresentWeather(data) {

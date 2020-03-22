@@ -24,7 +24,7 @@ export { titleCase };
 
 // Set the minimum date of the search-trip-date input field dynamically
 // setMinDate(label, dateField)
-const setMinDate = (labelElement, dateElement) => {
+const setMinDate = (labelElement, departElement, returnElement) => {
   // set date value to todays date
   const date = new Date();
 
@@ -38,9 +38,11 @@ const setMinDate = (labelElement, dateElement) => {
   const minDate = yyyy + "-" + mm + "-" + dd;
 
   // set minimum date value to todays date
-  dateElement.setAttribute("min", minDate);
-  // dateElement.value = "2004-05-23";
-  dateElement.value = minDate;
+  departElement.setAttribute("min", minDate);
+  returnElement.setAttribute("min", minDate);
+  // departElement.value = "2004-05-23";
+  departElement.value = minDate;
+  returnElement.value = minDate;
 
   // formatting the display date in a dd/mm/yyyy format
   const minDateDisp = `${date.getDate()}-${date.getMonth() +

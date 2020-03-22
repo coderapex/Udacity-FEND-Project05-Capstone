@@ -114,27 +114,27 @@ input {
   grid-template-columns: 50% 50%;
 }
 
-#weekly-forecast {
+#multi-forecast {
   padding: 2%;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
   .day-forecast {
-    margin: 5px;
+    margin: 2.5px;
     border: solid;
-    padding: 15px;
+    padding: 5px;
   }
 
   .date {
-    font-size: 90%;
+    font-size: 60%;
   }
 
   .day-min {
-    font-size: 130%;
+    font-size: 110%;
+    color: rgb(126, 126, 126);
   }
 
   .day-max {
-    font-size: 130%;
-    color: rgb(70, 70, 70);
+    font-size: 150%;
   }
 }
