@@ -53,7 +53,15 @@ const setMinDate = (labelElement, dateElement) => {
 
 export { setMinDate };
 
-// epochToDateString(1585033200)
+// dateObjectToEpoch(date) =>
+
+const dateToEpoch = date => {
+  return Math.floor(date.getTime() / 1000.0);
+};
+
+export { dateToEpoch };
+
+// epochToDateString(1585033200) => "24 Mar 2020"
 const epochToDateString = epochDate => {
   let fullDate = new Date(epochDate * 1000);
 

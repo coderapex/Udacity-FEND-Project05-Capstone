@@ -74,11 +74,11 @@ app.post("/future-weather", async (request, response) => {
   console.log(queryString);
 
   const weatherData = await fetch(queryString);
-  console.log("weatherData");
-  console.log(weatherData);
+  // console.log("weatherData");
+  // console.log(weatherData);
   const weatherJSON = await weatherData.json();
-  console.log("weatherJSON");
-  console.log(weatherJSON);
+  // console.log("weatherJSON");
+  // console.log(weatherJSON);
 
   response.send(weatherJSON);
 });
