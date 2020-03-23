@@ -274,62 +274,62 @@ button {
   font-family: "Special Elite", cursive;
 }
 
-// @media (min-width: 600px) and (max-width: 899px) {
-//   #result-section {
-//     display: grid;
-//     grid-template-columns: 1fr 1fr 1fr 1fr;
-//     // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-//     grid-template-rows: repeat(9, minmax(50px, auto));
-//     grid-template-areas:
-//       "trip-duration-message trip-duration-message trip-duration-message trip-duration-message"
-//       "destination-details destination-details destination-details destination-details"
-//       "destination-details destination-details destination-details destination-details"
-//       "image image image image"
-//       "image image image image"
-//       "image image image image"
-//       "departure-days departure-days departure-days departure-days" "single-temperature single-temperature single-details single-details"
-//       "multi-forecast multi-forecast multi-forecast multi-forecast"
-//       "multi-forecast multi-forecast multi-forecast multi-forecast";
+@media (min-width: 600px) and (max-width: 899px) {
+  #result-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(9, minmax(50px, auto));
+    grid-template-areas:
+      "trip-duration-message trip-duration-message trip-duration-message trip-duration-message"
+      "destination-details destination-details destination-details destination-details"
+      "destination-details destination-details destination-details destination-details"
+      "image image image image"
+      "image image image image"
+      "image image image image"
+      "departure-days departure-days departure-days departure-days" "single-temperature single-temperature single-details single-details"
+      "multi-forecast multi-forecast multi-forecast multi-forecast"
+      "multi-forecast multi-forecast multi-forecast multi-forecast";
 
-//     // justify-content: center;
-//     // justify-items: stretch;
-//     // align-items: stretch;
-//     // width: 100%;
-//   }
+    // justify-content: center;
+    // justify-items: stretch;
+    // align-items: stretch;
+    // width: 100%;
+  }
 
-//   #multi-forecast {
-//     padding: 7px;
-//     grid-area: multi-forecast;
+  #multi-forecast {
+    padding: 7px;
+    grid-area: multi-forecast;
 
-//     display: flex;
-//     flex-direction: column;
-//     // justify-content: space-evenly;
-//     flex-wrap: wrap;
-//   }
-// }
+    display: flex;
+    flex-direction: column;
+    // justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+}
 
-// @media (max-width: 600px) {
-//   #result-section {
-//     display: grid;
-//     grid-template-columns: 1fr 1fr 1fr 1fr;
-//     // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-//     grid-template-rows: repeat(auto, minmax(50px, auto));
+@media (max-width: 600px) {
+  #result-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(auto, minmax(50px, auto));
 
-//     grid-template-areas: "trip-duration-message" "destination-details" "destination-details" "image" "image" "image" "departure-days" "single-temperature" "single-details" "multi-forecast";
-//   }
+    grid-template-areas: "trip-duration-message" "destination-details" "destination-details" "image" "image" "image" "departure-days" "single-temperature" "single-details" "multi-forecast";
+  }
 
-//   #image {
-//     img {
-//       width: min-content;
-//     }
-//   }
+  #image {
+    img {
+      width: min-content;
+    }
+  }
 
-//   #multi-forecast {
-//     display: flex;
-//     flex-flow: column;
-//     flex-direction: column;
-//   }
-// }
+  #multi-forecast {
+    display: flex;
+    flex-flow: column;
+    flex-direction: column;
+  }
+}
 
 // #trip-details {
 //   // display: flex;
