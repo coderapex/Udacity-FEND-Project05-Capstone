@@ -285,7 +285,8 @@ function geonamesQuery(locationString) {
   return queryString;
 }
 
-export { geonamesQuery };
+// export { geonamesQuery };
+exports.geonamesQuery = geonamesQuery;
 
 function darkSkyPresentQuery(lat, long) {
   // https://api.darksky.net/forecast/[darkskyKey]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
