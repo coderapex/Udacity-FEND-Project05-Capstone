@@ -8,7 +8,7 @@
 // - Get the weather of the coordinates from Dark Sky API
 // - Get image of location from Pixabay API
 
-import { trim, dateToEpoch, setMinDate, epochToDateString } from "./helper";
+import { trim, dateToEpoch, epochToDateString } from "./helper";
 import {
   dummyCoordinateJSON,
   dummyImageJSON,
@@ -28,8 +28,6 @@ const errorMessage = document.getElementById("error-message");
 
 const departDateInput = document.getElementById("trip-date-field");
 const returnDateInput = document.getElementById("trip-end-field");
-const departOn = new Date(departDateInput.value);
-const returnOn = new Date(returnDateInput.value);
 
 // set minimum date to todays date
 setMinDate(departDateLabel, departDateInput, returnDateInput);
@@ -75,6 +73,11 @@ async function handleSubmit(e) {
     console.log(error);
   }
 }
+
+export { handleSubmit };
+
+const departOn = new Date(departDateInput.value);
+const returnOn = new Date(returnDateInput.value);
 
 function renderUI(tripDates, coordinates, image, forecast) {
   console.log("- In renderUI()");
@@ -271,6 +274,8 @@ function calculateTripDates() {
   return tripData;
 }
 
+export { calculateTripDates };
+
 async function getCoordinates(locationString) {
   console.log("- In getCoordinates(locationString)");
 
@@ -301,3 +306,36 @@ function handleReset(e) {
   tripLocation.value = "";
   setMinDate(departDateLabel, departDateInput, returnDateInput);
 }
+
+// Set the minimum date of the search-trip-date input field dynamically
+// setMinDate(label, dateField)
+function setMinDate(labelElement, departElement, returnElement) {
+  // set date value to todays date
+  const date = new Date();
+
+  const dd = date.getDate();
+  let mm = date.getMonth() + 1;
+  if (mm < 10) {
+    mm = "0" + mm;
+  }
+  const yyyy = date.getFullYear();
+
+  const minDate = yyyy + "-" + mm + "-" + dd;
+
+  // set minimum date value to todays date
+  departElement.setAttribute("min", minDate);
+  returnElement.setAttribute("min", minDate);
+  // departElement.value = "2004-05-23";
+  departElement.value = minDate;
+  returnElement.value = minDate;
+
+  // formatting the display date in a dd/mm/yyyy format
+  const minDateDisp = `${date.getDate()}-${date.getMonth() +
+    1}-${date.getFullYear()}`;
+
+  // Update the HTML label placeholder
+  const labelValue = `Date of Departure (after ${minDateDisp})`;
+  labelElement.innerText = labelValue;
+}
+
+export { setMinDate };

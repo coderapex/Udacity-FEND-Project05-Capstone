@@ -22,39 +22,6 @@ function titleCase(str) {
 
 export { titleCase };
 
-// Set the minimum date of the search-trip-date input field dynamically
-// setMinDate(label, dateField)
-const setMinDate = (labelElement, departElement, returnElement) => {
-  // set date value to todays date
-  const date = new Date();
-
-  const dd = date.getDate();
-  let mm = date.getMonth() + 1;
-  if (mm < 10) {
-    mm = "0" + mm;
-  }
-  const yyyy = date.getFullYear();
-
-  const minDate = yyyy + "-" + mm + "-" + dd;
-
-  // set minimum date value to todays date
-  departElement.setAttribute("min", minDate);
-  returnElement.setAttribute("min", minDate);
-  // departElement.value = "2004-05-23";
-  departElement.value = minDate;
-  returnElement.value = minDate;
-
-  // formatting the display date in a dd/mm/yyyy format
-  const minDateDisp = `${date.getDate()}-${date.getMonth() +
-    1}-${date.getFullYear()}`;
-
-  // Update the HTML label placeholder
-  const labelValue = `Date of Departure (after ${minDateDisp})`;
-  labelElement.innerText = labelValue;
-};
-
-export { setMinDate };
-
 // dateObjectToEpoch(date) =>
 
 const dateToEpoch = date => {
