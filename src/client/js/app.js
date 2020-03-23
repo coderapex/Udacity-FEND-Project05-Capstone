@@ -9,7 +9,13 @@
 // - Get image of location from Pixabay API
 
 import { trim, dateToEpoch, setMinDate, epochToDateString } from "./helper";
-import { dummyCoordinateJSON, dummyImageJSON } from "./helper";
+import {
+  dummyCoordinateJSON,
+  dummyImageJSON,
+  dummyPresentForecast,
+  dummyFutureForecast,
+  dummyTripData
+} from "./helper";
 
 // variable to save all the data
 let tripData = {};
@@ -18,12 +24,15 @@ let tripData = {};
 const form = document.getElementById("search-form");
 const tripLocation = document.getElementById("trip-location-field");
 const departDateLabel = document.getElementById("trip-date-label");
-const departDate = document.getElementById("trip-date-field");
-const returnDate = document.getElementById("trip-end-field");
 const saveButton = document.getElementById("trip-save-button");
 const resetButton = document.getElementById("trip-reset-button");
 const errorSection = document.getElementById("error-section");
 const errorMessage = document.getElementById("error-message");
+
+const departDate = document.getElementById("trip-date-field");
+const returnDate = document.getElementById("trip-end-field");
+const departOn = new Date(departDate.value);
+const returnOn = new Date(returnDate.value);
 
 // set minimum date to todays date
 setMinDate(departDateLabel, departDate, returnDate);
@@ -44,21 +53,158 @@ async function handleSubmit(e) {
     // console.log(`🚀: handleSubmit -> tripDatesData`, tripDatesData);
 
     // fetch coordinates - production ready
-    // const coordinatesData = await getCoordinates(tripLocation.value);
+    const coordinatesData = await getCoordinates(tripLocation.value);
     // for development
-    const coordinatesData = dummyCoordinateJSON;
+    // const coordinatesData = dummyCoordinateJSON;
     // console.log(`🚀: handleSubmit -> coordinatesData`, coordinatesData);
 
-    // production ready - fetch image of location
-    // const imageData = await getImageData(coordinatesData);
+    // fetch image of location - production ready
+    const imageData = await getImageData(coordinatesData);
     // for development
-    const imageData = dummyImageJSON;
+    // const imageData = dummyImageJSON;
     // console.log(`🚀: handleSubmit -> imageData`, imageData);
 
-    // const forecastData = await getForecastData(coordinatesData);
+    // fetch weather forecast - production ready
+    const forecastData = await getForecastData(tripDatesData, coordinatesData);
+    // for development
+    // const forecastData = dummyPresentForecast;
+    // const forecastData = dummyFutureForecast;
     // console.log(`🚀: handleSubmit -> forecastData`, forecastData);
+
+    // updating the UI after all results are fetched
+    renderUI(tripDatesData, coordinatesData, imageData, forecastData);
   } catch (error) {
-    console.log("Error Occured:");
+    console.log("Error in handleSubmit");
+    console.log(error);
+  }
+}
+
+function renderUI(tripDates, coordinates, image, forecast) {
+  console.log("- In renderUI()");
+  // let departOn = new Date(departDate.value);
+  // let returnOn = new Date(returnDate.value);
+
+  let tripData = {
+    city: coordinates.geonames[0].name,
+    country: coordinates.geonames[0].countryName,
+    daysLeft: tripDates.daysLeft,
+    departure: epochToDateString(dateToEpoch(departOn)),
+    duration: Math.floor((returnOn - departOn) / (1000 * 3600 * 24)),
+    forecast: forecast.daily.data,
+    imgURL: image.hits[0].webformatURL,
+    return: epochToDateString(dateToEpoch(returnOn))
+  };
+
+  // for development
+  // tripData = dummyTripData;
+  // console.log(tripdata);
+
+  /* ***** ***** ***** */
+
+  console.log("In renderTripData()");
+
+  // getting all HTML Elements
+  const resultSection = document.getElementById("result-section");
+  const tripDuration = document.getElementById("trip-duration");
+  const locationImage = document.getElementById("location-image");
+  const cityName = document.getElementById("city-name");
+  const countryName = document.getElementById("country-name");
+  const departDate = document.getElementById("depart");
+  const returnDate = document.getElementById("return");
+  const singleForecast = document.getElementById("single-forecast");
+  const minMax = document.getElementById("min-max");
+  const humidity = document.getElementById("humidity");
+  const wind = document.getElementById("wind");
+  const daysLeft = document.getElementById("days-left");
+  const multiForecast = document.getElementById("multi-forecast");
+
+  // make result section visible
+  resultSection.style.display = "block";
+
+  // updating core trip information in the UI
+  let tripLengthString = "";
+  if (tripData.duration == 0) tripLengthString = ` 1 day `;
+  else tripLengthString = ` ${tripData.duration + 1} days `;
+  tripDuration.innerHTML = tripLengthString;
+
+  locationImage.setAttribute("src", tripData.imgURL);
+
+  cityName.innerHTML = tripData.city;
+  countryName.innerHTML = tripData.country;
+  departDate.innerHTML = tripData.departure;
+  returnDate.innerHTML = tripData.return;
+  daysLeft.innerHTML = ` ${Math.ceil(tripData.daysLeft)} `;
+
+  // updating the UI based on tripData forecast
+  if (tripData.forecast.length == 1) {
+    multiForecast.style.display = "none";
+    singleForecast.style.display = "grid";
+
+    const dayForecast = tripData.forecast[0];
+
+    const max = dayForecast.temperatureMax;
+    const min = dayForecast.temperatureMin;
+    minMax.innerHTML = `${min}/${max}`;
+
+    humidity.innerHTML = dayForecast.humidity;
+    wind.innerHTML = dayForecast.windSpeed + " kmph";
+  } else {
+    singleForecast.style.display = "none";
+    multiForecast.style.display = "grid";
+    multiForecast.innerHTML = "";
+
+    const weekForecast = tripData.forecast;
+
+    weekForecast.forEach(entry => {
+      let time = entry.time;
+      let dateFull = epochToDateString(time);
+      let date = dateFull.slice(0, dateFull.length - 4);
+
+      let min = entry.temperatureMin;
+      let max = entry.temperatureMax;
+
+      let html = `
+          <div class="day-forecast">
+            <div class="date">${date}</div>
+            <div>
+              <span class="day-min">${min}</span>
+              <span class="day-max">${max}</span>
+            </div>
+          </div>
+        `;
+
+      // h.insertAdjacentHTML("afterend", "<p>My new paragraph</p>");
+      multiForecast.insertAdjacentHTML("beforeend", html);
+    });
+  }
+  console.log("- Exiting renderUI()");
+}
+
+async function getForecastData(tripDatesData, coordinatesData) {
+  console.log("- In getForecastData()");
+
+  try {
+    // let dateValue = new Date(departDate.value);
+    let bodyData = {
+      daysLeft: tripDatesData.daysLeft,
+      lat: coordinatesData.geonames[0].lat,
+      long: coordinatesData.geonames[0].lng,
+      date: new Date(departDate.value)
+    };
+
+    let weatherData = await fetch(`/fetch-forecast`, {
+      method: "post",
+      body: JSON.stringify(bodyData),
+      headers: { "Content-Type": "application/json" }
+    });
+    const weatherJSON = await weatherData.json();
+    console.log(weatherJSON);
+
+    console.log("- Exiting getForecastData()");
+
+    return weatherJSON;
+  } catch (error) {
+    console.log("Error Occurred:");
     console.log(error);
   }
 }
@@ -137,29 +283,6 @@ async function getCoordinates(locationString) {
   }
 }
 
-// async function getForecastData(coordinatesData) {
-//   console.log("- In getForecastData(coordinatesData)");
-
-//   try {
-//     let bodyData = { lat: data.lat, long: data.long, date: date };
-//     let weatherData = await fetch(`/future-weather`, {
-//       method: "post",
-//       body: JSON.stringify(bodyData),
-//       headers: { "Content-Type": "application/json" }
-//     });
-//     const weatherJSON = await weatherData.json();
-//     console.log("~~~~~ 1 day weatherJSON RECIEVED ~~~~~");
-//     console.log(weatherJSON);
-
-//     console.log("- Exiting getForecastData(coordinatesData)");
-
-//     return weatherJSON;
-//   } catch (error) {
-//     console.log("Error Occurred:");
-//     console.log(error);
-//   }
-// }
-
 function handleReset(e) {
   e.preventDefault();
   console.log("In handleReset()");
@@ -167,124 +290,3 @@ function handleReset(e) {
   tripLocation.value = "";
   setMinDate(departDateLabel, departDate, returnDate);
 }
-
-// const dummyCoordinateJSON = {
-//   totalResultsCount: 1127,
-//   geonames: [
-//     {
-//       adminCode1: "02",
-//       lng: "11.57549",
-//       geonameId: 2867714,
-//       toponymName: "Munich",
-//       countryId: "2921044",
-//       fcl: "P",
-//       population: 1260391,
-//       countryCode: "DE",
-//       name: "Munich",
-//       fclName: "city, village,...",
-//       adminCodes1: {
-//         ISO3166_2: "BY"
-//       },
-//       countryName: "Germany",
-//       fcodeName: "seat of a first-order administrative division",
-//       adminName1: "Bavaria",
-//       lat: "48.13743",
-//       fcode: "PPLA"
-//     }
-//   ]
-// };
-
-// const dummyImageJSON = {
-//   total: 7,
-//   totalHits: 7,
-//   hits: [
-//     {
-//       id: 4898432,
-//       pageURL:
-//         "https://pixabay.com/photos/winter-winter-forest-wintry-snow-4898432/",
-//       type: "photo",
-//       tags: "winter, winter forest, wintry",
-//       previewURL:
-//         "https://cdn.pixabay.com/photo/2020/03/03/11/36/winter-4898432_150.jpg",
-//       previewWidth: 100,
-//       previewHeight: 150,
-//       webformatURL:
-//         "https://pixabay.com/get/52e8dc4b4e51ae14f1dc8460c62d3177143cdde44e50744171267adc954dcc_640.jpg",
-//       webformatWidth: 427,
-//       webformatHeight: 640,
-//       largeImageURL:
-//         "https://pixabay.com/get/52e8dc4b4e51ae14f6da8c7dda2932781c3edde6524c704c7d2b72d59f4fc551_1280.jpg",
-//       imageWidth: 3648,
-//       imageHeight: 5472,
-//       imageSize: 5194951,
-//       views: 68,
-//       downloads: 52,
-//       favorites: 3,
-//       likes: 5,
-//       comments: 4,
-//       user_id: 10582885,
-//       user: "naturfreund_pics",
-//       userImageURL:
-//         "https://cdn.pixabay.com/user/2018/11/03/15-42-57-242_250x250.jpg"
-//     },
-//     {
-//       id: 4161615,
-//       pageURL:
-//         "https://pixabay.com/photos/cologne-germany-europe-travel-4161615/",
-//       type: "photo",
-//       tags: "cologne, germany, europe",
-//       previewURL:
-//         "https://cdn.pixabay.com/photo/2019/04/27/23/16/cologne-4161615_150.jpg",
-//       previewWidth: 100,
-//       previewHeight: 150,
-//       webformatURL:
-//         "https://pixabay.com/get/52e1d3424c53a914f1dc8460c62d3177143cdde44e50744171267adc954dcc_640.jpg",
-//       webformatWidth: 426,
-//       webformatHeight: 640,
-//       largeImageURL:
-//         "https://pixabay.com/get/52e1d3424c53a914f6da8c7dda2932781c3edde6524c704c7d2b72d59f4fc551_1280.jpg",
-//       imageWidth: 4000,
-//       imageHeight: 6000,
-//       imageSize: 10877245,
-//       views: 351,
-//       downloads: 175,
-//       favorites: 2,
-//       likes: 6,
-//       comments: 1,
-//       user_id: 12049839,
-//       user: "ValdasMiskinis",
-//       userImageURL:
-//         "https://cdn.pixabay.com/user/2020/01/04/20-28-22-654_250x250.jpg"
-//     },
-//     {
-//       id: 3932295,
-//       pageURL: "https://pixabay.com/photos/pirna-saxony-3932295/",
-//       type: "photo",
-//       tags: "pirna, saxony, elbe sandstone mountains",
-//       previewURL:
-//         "https://cdn.pixabay.com/photo/2019/01/14/14/37/pirna-3932295_150.jpg",
-//       previewWidth: 100,
-//       previewHeight: 150,
-//       webformatURL:
-//         "https://pixabay.com/get/55e9d641485ba914f1dc8460c62d3177143cdde44e50744171267adc954dcc_640.jpg",
-//       webformatWidth: 426,
-//       webformatHeight: 640,
-//       largeImageURL:
-//         "https://pixabay.com/get/55e9d641485ba914f6da8c7dda2932781c3edde6524c704c7d2b72d59f4fc551_1280.jpg",
-//       imageWidth: 3759,
-//       imageHeight: 5639,
-//       imageSize: 6172646,
-//       views: 325,
-//       downloads: 101,
-//       favorites: 1,
-//       likes: 3,
-//       comments: 0,
-//       user_id: 10881565,
-//       user: "pmwtastro",
-//       userImageURL:
-//         "https://cdn.pixabay.com/user/2018/12/10/18-30-45-300_250x250.jpg"
-//     }
-//   ],
-//   error: false,
-//   errorMessage: null
-// };

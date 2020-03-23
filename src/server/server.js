@@ -65,26 +65,65 @@ app.post("/fetch-coordinates", async (request, response) => {
 
     response.send(coordinateJSON);
   } catch (error) {
-    console.log("Error Occurred:");
+    console.log(`Error in app.post("/fetch-coordinates")`);
     console.log(error);
   }
 });
 
-function geonamesQuery(locationString) {
-  console.log(`In geonamesQuery(locationString)`);
-  // http://api.geonames.org/searchJSON?q=london&maxRows=1&username=coderapex
-  const startString = "http://api.geonames.org/searchJSON?q=";
-  const endString = "&maxRows=1&username=coderapex";
+// POST route to get weather forecast
+app.post("/fetch-forecast", async (request, response) => {
+  try {
+    console.log(`- - In app.post("/fetch-forecast")`);
 
-  // removing empty spaces from the query string
-  locationString = locationString.replace(/\s/g, "%20");
+    let lat = request.body.lat;
+    let long = request.body.long;
+    let date = request.body.date;
+    let daysLeft = request.body.daysLeft;
+    console.log("Days left to trip : ", daysLeft);
 
-  // setting final query string to call
-  const queryString = startString + locationString + endString;
+    // fetch single of weekly forecast depending on daysLeft value
+    if (daysLeft < 7) {
+      console.log("Calling present forecast");
 
-  console.log(`🚀: geonamesQuery -> queryString`, queryString);
-  return queryString;
-}
+      let queryString = darkSkyPresentQuery(lat, long);
+
+      console.log("Present query string:");
+      console.log(queryString);
+
+      const weatherData = await fetch(queryString);
+      // console.log("weatherData");
+      // console.log(weatherData);
+      const weatherJSON = await weatherData.json();
+      // console.log("weatherJSON");
+      // console.log(weatherJSON);
+
+      console.log(`- - Exiting app.post("/fetch-forecast")`);
+      response.send(weatherJSON);
+    } else {
+      console.log("Calling future forecast");
+
+      let queryString = darkSkyFutureQuery(lat, long, date);
+
+      console.log("Future query string:");
+      console.log(queryString);
+
+      const weatherData = await fetch(queryString);
+      // console.log("weatherData");
+      // console.log(weatherData);
+      const weatherJSON = await weatherData.json();
+      // console.log("weatherJSON");
+      // console.log(weatherJSON);
+
+      console.log(`- - Exiting app.post("/fetch-forecast")`);
+      response.send(weatherJSON);
+    }
+
+    return;
+  } catch (error) {
+    console.log(`Error in app.post("/fetch-forecast")`);
+    console.log(error);
+  }
+});
 
 // GET route to fetch the present weather data
 app.post("/present-weather", async (request, response) => {
@@ -146,7 +185,12 @@ app.post("/get-image", async (request, response) => {
     // console.log(imageJSON);
 
     // adding a flag saying no error in finding image
-    imageJSON = { ...imageJSON, error: false, errorMessage: null };
+    imageJSON = {
+      ...imageJSON,
+      error: false,
+      errorMessage: null,
+      imageType: "city"
+    };
 
     // in case no image is found, search for country image
     if (imageJSON.total == 0) {
@@ -162,7 +206,12 @@ app.post("/get-image", async (request, response) => {
       // console.log(imageJSON);
 
       // adding a flag saying no error in finding image
-      imageJSON = { ...imageJSON, error: false, errorMessage: null };
+      imageJSON = {
+        ...imageJSON,
+        error: false,
+        errorMessage: null,
+        imageType: "country"
+      };
 
       // if no image is found, setting error message
       if (imageJSON.total == 0) {
@@ -172,7 +221,8 @@ app.post("/get-image", async (request, response) => {
         imageJSON = {
           ...imageJSON,
           error: true,
-          errorMessage: "No image found for city or country"
+          errorMessage: "No image found for city or country",
+          imageType: null
         };
       }
     }
@@ -218,6 +268,22 @@ const addProjectData = (request, response) => {
 app.post("/add", addProjectData);
 
 /* ~~~~~ HELPER FUNCTIONS ~~~~~ */
+
+function geonamesQuery(locationString) {
+  console.log(`In geonamesQuery(locationString)`);
+  // http://api.geonames.org/searchJSON?q=london&maxRows=1&username=coderapex
+  const startString = "http://api.geonames.org/searchJSON?q=";
+  const endString = "&maxRows=1&username=coderapex";
+
+  // removing empty spaces from the query string
+  locationString = locationString.replace(/\s/g, "%20");
+
+  // setting final query string to call
+  const queryString = startString + locationString + endString;
+
+  console.log(`🚀: geonamesQuery -> queryString`, queryString);
+  return queryString;
+}
 
 function darkSkyPresentQuery(lat, long) {
   // https://api.darksky.net/forecast/[darkskyKey]/[latitude],[longitude]&exclude=minutely,hourly,flags&units=si
