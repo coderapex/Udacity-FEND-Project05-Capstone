@@ -161,7 +161,9 @@ button {
 
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: repeat(auto, minmax(50px, auto));
+
   grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image departure-days departure-days departure-days departure-days" "image image image image single-temperature single-temperature single-details single-details" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
 
   // grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image single-temperature single-temperature single-details single-details" "image image image image departure-days departure-days departure-days departure-days" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
@@ -169,10 +171,12 @@ button {
   #trip-duration-message {
     grid-area: trip-duration-message;
     font-size: 150%;
+    padding: 10px;
   }
 
   #image {
     grid-area: image;
+    padding: 10px;
 
     img {
       width: 100%;
@@ -180,6 +184,7 @@ button {
   }
 
   #destination-details {
+    padding: 10px;
     grid-area: destination-details;
 
     #city-name {
@@ -194,6 +199,7 @@ button {
   }
 
   #single-temperature {
+    padding: 10px;
     grid-area: single-temperature;
 
     #min-max {
@@ -202,6 +208,7 @@ button {
   }
 
   #single-details {
+    padding: 10px;
     grid-area: single-details;
 
     #humidity,
@@ -211,6 +218,7 @@ button {
   }
 
   #departure-days {
+    padding: 10px;
     grid-area: departure-days;
 
     #days-left {
@@ -219,13 +227,16 @@ button {
   }
 
   #multi-forecast {
+    padding: 10px;
     grid-area: multi-forecast;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    flex-wrap: nowrap;
 
     .day-forecast {
       border: solid;
+      min-width: 10vw;
       width: 100%;
       padding: 5px;
       margin: 5px;
@@ -261,6 +272,63 @@ button {
 #wind,
 .date {
   font-family: "Special Elite", cursive;
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  #result-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(9, minmax(50px, auto));
+    grid-template-areas:
+      "trip-duration-message trip-duration-message trip-duration-message trip-duration-message"
+      "destination-details destination-details destination-details destination-details"
+      "destination-details destination-details destination-details destination-details"
+      "image image image image"
+      "image image image image"
+      "image image image image"
+      "departure-days departure-days departure-days departure-days" "single-temperature single-temperature single-details single-details"
+      "multi-forecast multi-forecast multi-forecast multi-forecast"
+      "multi-forecast multi-forecast multi-forecast multi-forecast";
+
+    // justify-content: center;
+    // justify-items: stretch;
+    // align-items: stretch;
+    // width: 100%;
+  }
+
+  #multi-forecast {
+    padding: 7px;
+    grid-area: multi-forecast;
+
+    display: flex;
+    flex-direction: column;
+    // justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 600px) {
+  #result-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(auto, minmax(50px, auto));
+
+    grid-template-areas: "trip-duration-message" "destination-details" "destination-details" "image" "image" "image" "departure-days" "single-temperature" "single-details" "multi-forecast";
+  }
+
+  #image {
+    img {
+      width: min-content;
+    }
+  }
+
+  #multi-forecast {
+    display: flex;
+    flex-flow: column;
+    flex-direction: column;
+  }
 }
 
 // #trip-details {
