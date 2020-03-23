@@ -27,6 +27,90 @@ input {
   width: 100%;
   line-height: 16px;
   margin: 10px 0;
+  background: rgb(226, 226, 226);
+  box-shadow: 0px 0px 12px rgb(160, 160, 160);
+
+  &:hover {
+    background: rgb(231, 231, 231);
+    box-shadow: 0px 0px 20px rgb(114, 114, 114);
+  }
+
+  &:focus {
+    border: 2px solid rgb(0, 151, 20);
+    background: none;
+  }
+}
+
+button {
+  background-color: #4caf50; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 8px;
+
+  &:hover {
+    background-color: #4caf50;
+    color: white;
+    box-shadow: 0 12px 16px 0 rgba(0, 0, 0, 0.24),
+      0 17px 50px 0 rgba(0, 0, 0, 0.19);
+  }
+
+  &#trip-save-button {
+    background-color: white;
+    color: black;
+    border: 2px solid #4caf50;
+
+    &:hover {
+      background-color: #4caf50;
+      color: white;
+    }
+  }
+
+  &#trip-reset-button {
+    background-color: white;
+    color: black;
+    border: 2px solid #f44336;
+
+    &:hover {
+      background-color: #f44336;
+      color: white;
+    }
+  }
+}
+
+#search-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-areas: "location location" "departure return" "buttons buttons";
+}
+
+#location-row {
+  grid-area: location;
+}
+
+#departure {
+  grid-area: departure;
+  padding-right: 10px;
+}
+
+#return {
+  grid-area: return;
+  padding-left: 10px;
+}
+
+#trip-buttons {
+  grid-area: buttons;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 .text-results {
@@ -97,14 +181,17 @@ input {
   }
 
   #city-name {
+    font-family: "Special Elite", cursive;
     font-size: 175%;
   }
 
   #country-name {
+    font-family: "Special Elite", cursive;
     font-size: 150%;
   }
 
   .trip-date {
+    font-family: "Special Elite", cursive;
     font-size: 110%;
   }
 }
@@ -127,6 +214,7 @@ input {
   }
 
   .date {
+    font-family: "Special Elite", cursive;
     font-size: 60%;
   }
 
@@ -138,4 +226,11 @@ input {
   .day-max {
     font-size: 150%;
   }
+}
+
+#trip-duration,
+#min-max,
+#humidity,
+#wind {
+  font-family: "Special Elite", cursive;
 }

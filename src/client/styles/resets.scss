@@ -2,6 +2,8 @@
    v2.0 | 20110126
    License: none (public domain)
 */
+@import url("https://fonts.googleapis.com/css?family=Special+Elite&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Crimson+Text&display=swap");
 
 * {
   box-sizing: border-box;
@@ -111,6 +113,7 @@ section {
 }
 body {
   line-height: 1;
+  font-family: "Crimson Text", serif;
 }
 ol,
 ul {
@@ -133,4 +136,13 @@ table {
 }
 ul {
   list-style-type: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Special Elite", cursive;
 }

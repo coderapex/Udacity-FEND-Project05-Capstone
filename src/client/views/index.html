@@ -13,31 +13,37 @@
     <main>
       <section id="search-section">
         <form id="search-form">
-          <fieldset>
-            <label for="trip-location-field">
-              Where are you travelling to?
-            </label>
-            <input
-              type="text"
-              name="trip-location-field"
-              id="trip-location-field"
-              placeholder="Enter location name..."
-            />
-          </fieldset>
+          <div id="location-row">
+            <fieldset>
+              <label for="trip-location-field">
+                Where are you travelling to?
+              </label>
+              <input
+                type="text"
+                name="trip-location-field"
+                id="trip-location-field"
+                placeholder="Enter location name..."
+              />
+            </fieldset>
+          </div>
 
-          <fieldset>
-            <label id="trip-date-label" for="trip-date-field">
-              Date of Departure
-            </label>
-            <input type="date" id="trip-date-field" required />
-          </fieldset>
+          <div id="departure">
+            <fieldset>
+              <label id="trip-date-label" for="trip-date-field">
+                Date of Departure
+              </label>
+              <input type="date" id="trip-date-field" required />
+            </fieldset>
+          </div>
 
-          <fieldset>
-            <label id="trip-end-label" for="trip-end-field">
-              Date of Return
-            </label>
-            <input type="date" id="trip-end-field" required />
-          </fieldset>
+          <div id="return">
+            <fieldset>
+              <label id="trip-end-label" for="trip-end-field">
+                Date of Return
+              </label>
+              <input type="date" id="trip-end-field" required />
+            </fieldset>
+          </div>
 
           <div id="trip-buttons">
             <button id="trip-save-button" type="submit">Save trip</button>
@@ -52,7 +58,9 @@
       </section>
 
       <section id="result-section">
-        <div>Your trip is <span id="trip-duration"> 5 days </span> long...</div>
+        <div id="trip-duration-message">
+          Your trip is <span id="trip-duration"> 5 days </span> long...
+        </div>
         <div id="trip-details">
           <div id="location-details">
             <div>
