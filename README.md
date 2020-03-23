@@ -1,10 +1,34 @@
 # Weather-Journal App Project
 
 ## Overview
-This project requires you to create an asynchronous web app that uses Web API and user data to dynamically update the UI. 
+
+This project requires is an asynchronous web app that uses Web API and user data to dynamically update the UI.
+
+The following API's have been used:
+
+- Geonames
+- Dark Sky
+- Pixabay
+
+### Extra Features Implemented
+
+- Add end date and display length of trip.
+- Pull in an image for the country from Pixabay API when the entered location brings up no results.
 
 ## Instructions
-This will require modifying the `server.js` file and the `website/app.js` file. You can see `index.html` for element references, and once you are finished with the project steps, you can use `style.css` to style your application to customized perfection.
 
-## Extras
-If you are interested in testing your code as you go, you can use `tests.js` as a template for writing and running some basic tests for your code.
+- Clone the repo.
+- 'npm install' to install all the dependencies.
+- 'npm run build-prod' to build production ready project.
+- 'npm run start' to start project distribution server.
+
+### Extras
+
+- 'npm run test' to run tests.
+- 'npm run build-dev' to start development server.
+
+## Links
+
+- [Geonames API](http://www.geonames.org/export/JSON-webservices.html)
+- [Darksky API](https://darksky.net/dev/docs)
+- [Pixabay API](https://pixabay.com/api/docs/)
