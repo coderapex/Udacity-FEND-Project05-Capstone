@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Travel App - FEND Capstone Project</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Travel App - FEND Capstone Project</h1>
+    </header>
+
+    <main>
+      <section id="search-section">
+        <form id="search-form">
+          <div id="location-row">
+            <fieldset>
+              <label for="trip-location-field">
+                Where are you travelling to?
+              </label>
+              <input
+                type="text"
+                name="trip-location-field"
+                id="trip-location-field"
+                placeholder="Enter location name..."
+              />
+            </fieldset>
+          </div>
+
+          <div id="departure">
+            <fieldset>
+              <label id="trip-date-label" for="trip-date-field">
+                Date of Departure
+              </label>
+              <input type="date" id="trip-date-field" required />
+            </fieldset>
+          </div>
+
+          <div id="return">
+            <fieldset>
+              <label id="trip-end-label" for="trip-end-field">
+                Date of Return
+              </label>
+              <input type="date" id="trip-end-field" required />
+            </fieldset>
+          </div>
+
+          <div id="trip-buttons">
+            <button id="trip-save-button" type="submit">Save trip</button>
+            <button id="trip-reset-button" type="reset">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="error-section">
+        <h3>ERROR</h3>
+        <p id="error-message">ERROR message here</p>
+      </section>
+
+      <section id="result-section">
+        <div id="trip-duration-message">
+          Your trip is <span id="trip-duration"> 5 days </span> long...
+        </div>
+        <div id="trip-details">
+          <div id="location-details">
+            <div>
+              <img
+                id="location-image"
+                src="https://cdn.pixabay.com/photo/2013/10/15/09/12/flower-195893_1280.jpg"
+                alt="location image"
+              />
+            </div>
+
+            <div id="location-description">
+              <div id="destination-details">
+                You are travelling to
+                <div id="city-name">Ldn</div>
+                <div id="country-name">UK</div>
+                <div>
+                  <span class="small-font">Depart on:</span>
+                  <span class="trip-date" id="depart">22 Mar 2020</span>
+                </div>
+                <div>
+                  <span class="small-font">Return on:</span>
+                  <span class="trip-date" id="return">22 Mar 2020</span>
+                </div>
+              </div>
+
+              <div id="single-forecast">
+                <div id="single-temperature">
+                  <span id="min-max">25/30</span><br />
+                  <span class="small-font">Min/Max</span>
+                </div>
+                <div id="single-details">
+                  <div>
+                    <span class="small-font">Humidity:</span>
+                    <span id="humidity">50%</span>
+                  </div>
+                  <div>
+                    <span class="small-font">Wind:</span>
+                    <span id="wind">25 km/h</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="departure-days">
+                You depart in <span id="days-left"> 5 </span>days
+              </div>
+            </div>
+          </div>
+
+          <div id="multi-forecast">
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+            <div class="day-forecast">
+              <div class="date">21 Mar</div>
+              <div>
+                <span class="day-min">25</span>
+                <span class="day-max">28</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>A Udacity Front End Nanodegree Project.</p>
+    </footer>
+
+    <!-- service worker script -->
+    <!-- <script>
+      // Check that service workers are supported
+      if ("serviceWorker" in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js");
+        });
+      }
+    </script> -->
+  </body>
+</html>

@@ -17,9 +17,6 @@ import {
   dummyTripData
 } from "./helper";
 
-// variable to save all the data
-let tripData = {};
-
 /* ~~~~~ FETCHING ALL HTML ELEMENTS ~~~~~ */
 const form = document.getElementById("search-form");
 const tripLocation = document.getElementById("trip-location-field");
@@ -29,13 +26,13 @@ const resetButton = document.getElementById("trip-reset-button");
 const errorSection = document.getElementById("error-section");
 const errorMessage = document.getElementById("error-message");
 
-const departDate = document.getElementById("trip-date-field");
-const returnDate = document.getElementById("trip-end-field");
-const departOn = new Date(departDate.value);
-const returnOn = new Date(returnDate.value);
+const departDateInput = document.getElementById("trip-date-field");
+const returnDateInput = document.getElementById("trip-end-field");
+const departOn = new Date(departDateInput.value);
+const returnOn = new Date(returnDateInput.value);
 
 // set minimum date to todays date
-setMinDate(departDateLabel, departDate, returnDate);
+setMinDate(departDateLabel, departDateInput, returnDateInput);
 
 /* ~~~~~ ATTACH EVENT HANDLER TO ELEMENTS ~~~~~ */
 form.addEventListener("submit", handleSubmit);
@@ -81,27 +78,26 @@ async function handleSubmit(e) {
 
 function renderUI(tripDates, coordinates, image, forecast) {
   console.log("- In renderUI()");
-  // let departOn = new Date(departDate.value);
-  // let returnOn = new Date(returnDate.value);
+  // let departOn = new Date(departDateInput.value);
+  // let returnOn = new Date(returnDateInput.value);
 
   let tripData = {
     city: coordinates.geonames[0].name,
     country: coordinates.geonames[0].countryName,
     daysLeft: tripDates.daysLeft,
     departure: epochToDateString(dateToEpoch(departOn)),
-    duration: Math.floor((returnOn - departOn) / (1000 * 3600 * 24)),
+    // duration: Math.floor((returnOn - departOn) / (1000 * 3600 * 24)),
+    duration: tripDates.duration,
     forecast: forecast.daily.data,
     imgURL: image.hits[0].webformatURL,
     return: epochToDateString(dateToEpoch(returnOn))
   };
 
   // for development
-  // tripData = dummyTripData;
+  // let tripData = dummyTripData;
   // console.log(tripdata);
 
   /* ***** ***** ***** */
-
-  console.log("In renderTripData()");
 
   // getting all HTML Elements
   const resultSection = document.getElementById("result-section");
@@ -109,9 +105,15 @@ function renderUI(tripDates, coordinates, image, forecast) {
   const locationImage = document.getElementById("location-image");
   const cityName = document.getElementById("city-name");
   const countryName = document.getElementById("country-name");
-  const departDate = document.getElementById("depart");
-  const returnDate = document.getElementById("return");
-  const singleForecast = document.getElementById("single-forecast");
+  const departDateText = document.getElementById("depart-text");
+  const returnDateText = document.getElementById("return-text");
+  // const singleForecast = document.getElementById("single-forecast");
+
+  /* ***** */
+  const singleTemperature = document.getElementById("single-temperature");
+  const singleDetails = document.getElementById("single-details");
+  /* ***** */
+
   const minMax = document.getElementById("min-max");
   const humidity = document.getElementById("humidity");
   const wind = document.getElementById("wind");
@@ -119,26 +121,32 @@ function renderUI(tripDates, coordinates, image, forecast) {
   const multiForecast = document.getElementById("multi-forecast");
 
   // make result section visible
-  resultSection.style.display = "block";
+  resultSection.style.display = "grid";
 
   // updating core trip information in the UI
   let tripLengthString = "";
-  if (tripData.duration == 0) tripLengthString = ` 1 day `;
+  if (tripData.duration < 1) tripLengthString = ` 1 day `;
   else tripLengthString = ` ${tripData.duration + 1} days `;
   tripDuration.innerHTML = tripLengthString;
 
   locationImage.setAttribute("src", tripData.imgURL);
+  locationImage.setAttribute(
+    "alt",
+    `${tripData.city}, ${tripData.country} image`
+  );
 
   cityName.innerHTML = tripData.city;
   countryName.innerHTML = tripData.country;
-  departDate.innerHTML = tripData.departure;
-  returnDate.innerHTML = tripData.return;
+  departDateText.innerHTML = tripData.departure;
+  returnDateText.innerHTML = tripData.return;
   daysLeft.innerHTML = ` ${Math.ceil(tripData.daysLeft)} `;
 
   // updating the UI based on tripData forecast
   if (tripData.forecast.length == 1) {
     multiForecast.style.display = "none";
-    singleForecast.style.display = "grid";
+    // singleForecast.style.display = "grid";
+    singleTemperature.style.display = "block";
+    singleDetails.style.display = "block";
 
     const dayForecast = tripData.forecast[0];
 
@@ -149,8 +157,11 @@ function renderUI(tripDates, coordinates, image, forecast) {
     humidity.innerHTML = dayForecast.humidity;
     wind.innerHTML = dayForecast.windSpeed + " kmph";
   } else {
-    singleForecast.style.display = "none";
-    multiForecast.style.display = "grid";
+    multiForecast.style.display = "flex";
+    // singleForecast.style.display = "none";
+    singleTemperature.style.display = "none";
+    singleDetails.style.display = "none";
+
     multiForecast.innerHTML = "";
 
     const weekForecast = tripData.forecast;
@@ -158,14 +169,14 @@ function renderUI(tripDates, coordinates, image, forecast) {
     weekForecast.forEach(entry => {
       let time = entry.time;
       let dateFull = epochToDateString(time);
-      let date = dateFull.slice(0, dateFull.length - 4);
+      let dateSliced = dateFull.slice(0, dateFull.length - 4);
 
       let min = entry.temperatureMin;
       let max = entry.temperatureMax;
 
       let html = `
           <div class="day-forecast">
-            <div class="date">${date}</div>
+            <div class="date">${dateSliced}</div>
             <div>
               <span class="day-min">${min}</span>
               <span class="day-max">${max}</span>
@@ -184,12 +195,12 @@ async function getForecastData(tripDatesData, coordinatesData) {
   console.log("- In getForecastData()");
 
   try {
-    // let dateValue = new Date(departDate.value);
+    // let dateValue = new Date(departDateInput.value);
     let bodyData = {
       daysLeft: tripDatesData.daysLeft,
       lat: coordinatesData.geonames[0].lat,
       long: coordinatesData.geonames[0].lng,
-      date: new Date(departDate.value)
+      date: new Date(departDateInput.value)
     };
 
     let weatherData = await fetch(`/fetch-forecast`, {
@@ -241,8 +252,8 @@ function calculateTripDates() {
   let tripData = {};
 
   // fetch all values submitted
-  let departOn = new Date(departDate.value);
-  let returnOn = new Date(returnDate.value);
+  let departOn = new Date(departDateInput.value);
+  let returnOn = new Date(returnDateInput.value);
 
   // calculate the difference in no. of days from today
   let today = new Date();
@@ -288,5 +299,5 @@ function handleReset(e) {
   console.log("In handleReset()");
 
   tripLocation.value = "";
-  setMinDate(departDateLabel, departDate, returnDate);
+  setMinDate(departDateLabel, departDateInput, returnDateInput);
 }

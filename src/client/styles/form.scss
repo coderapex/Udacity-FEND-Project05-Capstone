@@ -150,87 +150,201 @@ button {
   text-align: center;
 }
 
-#result-section {
-  display: block;
-  background-color: rgb(255, 223, 187);
-  text-align: center;
-  padding: 20px;
-}
-
-#trip-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-}
-
 .small-font {
   font-size: 75%;
 }
 
-#location-details {
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-evenly;
-  // align-items: center;
-  display: grid;
-  grid-template-columns: 40% 60%;
-  padding: 10px;
+#result-section {
+  background-color: rgb(255, 223, 187);
+  text-align: center;
+  padding: 20px;
 
-  img {
-    width: 100%;
-  }
-
-  #city-name {
-    font-family: "Special Elite", cursive;
-    font-size: 175%;
-  }
-
-  #country-name {
-    font-family: "Special Elite", cursive;
-    font-size: 150%;
-  }
-
-  .trip-date {
-    font-family: "Special Elite", cursive;
-    font-size: 110%;
-  }
-}
-
-#single-forecast {
-  padding: 2%;
-  display: grid;
-  grid-template-columns: 50% 50%;
-}
-
-#multi-forecast {
-  padding: 2%;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image departure-days departure-days departure-days departure-days" "image image image image single-temperature single-temperature single-details single-details" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
 
-  .day-forecast {
-    margin: 2.5px;
-    border: solid;
-    padding: 5px;
-  }
+  // grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image single-temperature single-temperature single-details single-details" "image image image image departure-days departure-days departure-days departure-days" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
 
-  .date {
-    font-family: "Special Elite", cursive;
-    font-size: 60%;
-  }
-
-  .day-min {
-    font-size: 110%;
-    color: rgb(126, 126, 126);
-  }
-
-  .day-max {
+  #trip-duration-message {
+    grid-area: trip-duration-message;
     font-size: 150%;
+  }
+
+  #image {
+    grid-area: image;
+
+    img {
+      width: 100%;
+    }
+  }
+
+  #destination-details {
+    grid-area: destination-details;
+
+    #city-name {
+      font-size: 200%;
+      padding: 10px;
+    }
+
+    #country-name {
+      font-size: 175%;
+      padding: 7px;
+    }
+  }
+
+  #single-temperature {
+    grid-area: single-temperature;
+
+    #min-max {
+      font-size: 175%;
+    }
+  }
+
+  #single-details {
+    grid-area: single-details;
+
+    #humidity,
+    #wind {
+      font-size: 125%;
+    }
+  }
+
+  #departure-days {
+    grid-area: departure-days;
+
+    #days-left {
+      font-size: 125%;
+    }
+  }
+
+  #multi-forecast {
+    grid-area: multi-forecast;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+
+    .day-forecast {
+      border: solid;
+      width: 100%;
+      padding: 5px;
+      margin: 5px;
+    }
+
+    .date {
+      font-size: 60%;
+    }
+
+    .day-min {
+      font-size: 125%;
+      color: rgb(126, 126, 126);
+    }
+
+    .day-max {
+      font-size: 170%;
+    }
   }
 }
 
 #trip-duration,
+#city-name,
+#country-name,
+#depart,
+#return,
 #min-max,
 #humidity,
-#wind {
+#wind,
+#days-left,
+#trip-duration,
+#min-max,
+#humidity,
+#wind,
+.date {
   font-family: "Special Elite", cursive;
 }
+
+// #trip-details {
+//   // display: flex;
+//   // flex-direction: column;
+//   // justify-content: space-evenly;
+// }
+
+// .small-font {
+//   font-size: 75%;
+// }
+
+// #location-details {
+//   // display: flex;
+//   // flex-direction: row;
+//   // justify-content: space-evenly;
+//   // align-items: center;
+
+//   img {
+//     width: 100%;
+//   }
+
+//   #image {
+//     grid-area: location-image;
+//   }
+
+//   #destination-details {
+//     grid-area: destination-details;
+//   }
+
+//   #city-name {
+//     font-family: "Special Elite", cursive;
+//     font-size: 175%;
+//   }
+
+//   #country-name {
+//     font-family: "Special Elite", cursive;
+//     font-size: 150%;
+//   }
+
+//   .trip-date {
+//     font-family: "Special Elite", cursive;
+//     font-size: 110%;
+//   }
+
+//   #departure-days {
+//     grid-area: departure-days;
+//   }
+// }
+
+// #single-forecast {
+//   // padding: 2%;
+//   // display: grid;
+//   // grid-template-columns: 50% 50%;
+
+//   #single-temperature {
+//     grid-area: single-temperature;
+//   }
+
+//   #single-details {
+//     grid-area: single-details;
+//   }
+// }
+
+// #multi-forecast {
+//   grid-area: multi-forecast;
+
+//   .day-forecast {
+//     margin: 2.5px;
+//     border: solid;
+//     padding: 5px;
+//   }
+
+//   .date {
+//     font-family: "Special Elite", cursive;
+//     font-size: 60%;
+//   }
+
+//   .day-min {
+//     font-size: 110%;
+//     color: rgb(126, 126, 126);
+//   }
+
+//   .day-max {
+//     font-size: 150%;
+//   }
+// }
