@@ -87,9 +87,9 @@ button {
 
 #search-form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-areas: "location location" "departure return" "buttons buttons";
+  grid-template-columns: 1fr;
+  grid-template-rows: minmax(auto, auto);
+  grid-template-areas: "location" "departure" "return" "buttons";
 }
 
 #location-row {
@@ -98,12 +98,10 @@ button {
 
 #departure {
   grid-area: departure;
-  padding-right: 10px;
 }
 
 #return {
   grid-area: return;
-  padding-left: 10px;
 }
 
 #trip-buttons {
@@ -111,35 +109,6 @@ button {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-}
-
-.text-results {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-}
-
-.url-results {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: center;
-}
-
-.result-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  h3 {
-    color: red;
-  }
-
-  .result-value {
-    font-size: 250%;
-  }
 }
 
 #error-section {
@@ -155,41 +124,45 @@ button {
 }
 
 #result-section {
-  background-color: rgb(255, 223, 187);
+  background-color: rgb(209, 209, 209);
+
+  background-image: url("https://cdn.pixabay.com/photo/2013/10/15/09/12/flower-195893_1280.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: screen;
+
   text-align: center;
-  padding: 20px;
+  padding: 10px;
 
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: repeat(auto, minmax(50px, auto));
-
-  grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image departure-days departure-days departure-days departure-days" "image image image image single-temperature single-temperature single-details single-details" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
-
-  // grid-template-areas: "trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message trip-duration-message" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image destination-details destination-details destination-details destination-details" "image image image image single-temperature single-temperature single-details single-details" "image image image image departure-days departure-days departure-days departure-days" "multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast multi-forecast";
+  grid-template-rows: minmax(auto, auto);
+  grid-template-areas: "trip-duration-message" "destination-details" "image" "departure-days" "single-temperature" "single-details" "multi-forecast";
 
   #trip-duration-message {
     grid-area: trip-duration-message;
     font-size: 150%;
-    padding: 10px;
+    padding: 5px;
   }
 
   #image {
     grid-area: image;
-    padding: 10px;
+    padding: 5px;
 
     img {
-      width: 100%;
+      width: 90%;
     }
   }
 
   #destination-details {
-    padding: 10px;
+    padding: 5px;
     grid-area: destination-details;
 
     #city-name {
       font-size: 200%;
-      padding: 10px;
+      padding: 5px;
     }
 
     #country-name {
@@ -199,7 +172,7 @@ button {
   }
 
   #single-temperature {
-    padding: 10px;
+    padding: 5px;
     grid-area: single-temperature;
 
     #min-max {
@@ -208,7 +181,7 @@ button {
   }
 
   #single-details {
-    padding: 10px;
+    padding: 5px;
     grid-area: single-details;
 
     #humidity,
@@ -218,7 +191,7 @@ button {
   }
 
   #departure-days {
-    padding: 10px;
+    padding: 5px;
     grid-area: departure-days;
 
     #days-left {
@@ -227,32 +200,49 @@ button {
   }
 
   #multi-forecast {
-    padding: 10px;
+    padding: 5px;
     grid-area: multi-forecast;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: nowrap;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: minmax(auto, auto);
 
     .day-forecast {
       border: solid;
       min-width: 10vw;
-      width: 100%;
-      padding: 5px;
+      padding: 15px;
       margin: 5px;
-    }
+      transition: 0.5s;
 
-    .date {
-      font-size: 60%;
-    }
+      &:hover {
+        border-color: red;
+        color: red;
+      }
 
-    .day-min {
-      font-size: 125%;
-      color: rgb(126, 126, 126);
-    }
+      .date {
+        font-size: 60%;
 
-    .day-max {
-      font-size: 170%;
+        &:hover {
+          color: red;
+        }
+      }
+
+      .day-min {
+        font-size: 125%;
+        color: rgb(126, 126, 126);
+
+        &:hover {
+          color: rgb(20, 20, 20);
+        }
+      }
+
+      .day-max {
+        font-size: 170%;
+
+        &:hover {
+          color: red;
+        }
+      }
     }
   }
 }
@@ -261,7 +251,6 @@ button {
 #city-name,
 #country-name,
 #depart,
-#return,
 #min-max,
 #humidity,
 #wind,
@@ -274,6 +263,101 @@ button {
   font-family: "Special Elite", cursive;
 }
 
+/* rules for medium-sized screen and up */
+
+@media (min-width: 600px) {
+  #departure {
+    padding-right: 10px;
+  }
+
+  #return {
+    padding-left: 10px;
+  }
+
+  #result-section {
+    // medium screen size
+    padding: 30px;
+    grid-template-columns: 1fr 1fr;
+    // grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: minmax(auto, auto);
+    grid-template-areas: "trip-duration-message trip-duration-message" "destination-details destination-details" "image image" "departure-days departure-days" "single-temperature single-details" "multi-forecast multi-forecast";
+
+    #image {
+      img {
+        max-width: 75%;
+      }
+    }
+
+    #multi-forecast {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: minmax(auto, auto);
+
+      justify-content: space-evenly;
+    }
+  }
+}
+
+/* rules for medium-sized screen ONLY */
+
+@media (min-width: 600px) and (max-width: 899px) {
+  #search-form {
+    // medium screens
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: "location location" "departure return" "buttons buttons";
+  }
+}
+
+/* rules for large-sized screen */
+
+@media (min-width: 900px) {
+  #search-form {
+    // large screens
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: minmax(auto, auto);
+    grid-template-areas: "location location location" "departure return buttons";
+
+    align-items: baseline;
+  }
+
+  #trip-buttons {
+    grid-area: buttons;
+    display: flex;
+    // flex-direction: row;
+    justify-content: space-evenly;
+
+    // large screens
+    flex-direction: column;
+    margin: 25px;
+    padding: 5px;
+  }
+
+  #result-section {
+    // medium screen size
+    padding: 50px;
+
+    #image {
+      img {
+        max-width: 50%;
+      }
+    }
+
+    #multi-forecast {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+      grid-template-rows: 1fr;
+      padding: 0px;
+
+      justify-content: space-evenly;
+
+      .day-forecast {
+        border: solid;
+        min-width: 5vw;
+        padding: 15px;
+        margin: 5px;
+      }
+    }
+  }
+}
 // @media (min-width: 600px) and (max-width: 899px) {
 //   #result-section {
 //     display: grid;

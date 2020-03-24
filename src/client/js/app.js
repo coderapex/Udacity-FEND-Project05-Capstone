@@ -132,11 +132,13 @@ function renderUI(tripDates, coordinates, image, forecast) {
   else tripLengthString = ` ${tripData.duration + 1} days `;
   tripDuration.innerHTML = tripLengthString;
 
-  locationImage.setAttribute("src", tripData.imgURL);
   locationImage.setAttribute(
     "alt",
     `${tripData.city}, ${tripData.country} image`
   );
+  locationImage.setAttribute("src", tripData.imgURL);
+
+  resultSection.style.backgroundImage = `url('${tripData.imgURL}')`;
 
   cityName.innerHTML = tripData.city;
   countryName.innerHTML = tripData.country;
@@ -160,7 +162,7 @@ function renderUI(tripDates, coordinates, image, forecast) {
     humidity.innerHTML = dayForecast.humidity;
     wind.innerHTML = dayForecast.windSpeed + " kmph";
   } else {
-    multiForecast.style.display = "flex";
+    multiForecast.style.display = "grid";
     // singleForecast.style.display = "none";
     singleTemperature.style.display = "none";
     singleDetails.style.display = "none";
